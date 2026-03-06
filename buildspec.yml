@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Installing SSH key
+
+  pre_build:
+    commands:
+      - echo "$SSH_PRIVATE_KEY3" > skd2_key.pem
+      - chmod 400 skd2_key.pem
+
+  build:
+    commands:
+      - echo Build started
+
+  post_build:
+    commands:
+      - echo Deploying to EC2
+      - scp -i skd2_key.pem -o StrictHostKeyChecking=no index.html ec2-user@54.215.135.131:/home/ec2-user/
+      - ssh -i skd2_key.pem ec2-user@54.215.135.131 "sudo mv /home/ec2-user/index.html /usr/share/nginx/html/index.html"
